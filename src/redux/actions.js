@@ -1,21 +1,39 @@
-import {ADD_POST, ADD_LIKE, DEL_LIKE} from './types';
+import {ADD_POST, SET_ACTIVITY} from "./types";
 
 export const addPost = (post) => {
     post.id = Date.now() + 1
-    post.data = Date.now();
     return {
         type: ADD_POST,
         payload: post
     }
 }
 
+export const setActivity = (post, activity) => {
+    const activityTypes = {
+        likes: 'whoLiked',
+        reposts: 'whoReposted',
+        comments: 'whoCommented'
+    }
 
-export const addLike = (count) => ({
-    type: ADD_LIKE,
-    payload: count + 1
-});
+    const {id, statistic} = post;
+    let activityStatistic = statistic[activityTypes[activity]]
 
-export const delLike = (count) => ({
-    type: DEL_LIKE,
-    payload: count - 1
-});
+    if (!activityStatistic.includes(1)) {
+        post[activity]++;
+        activityStatistic.push(1);
+    } else {
+        post[activity]--;
+        activityStatistic = activityStatistic.filter(userId => userId != 1)
+    }
+    return {
+        type: SET_ACTIVITY,
+        payload: {
+            [activity.toString()]: post[activity],
+            statistic: {...post.statistic, [activityTypes[activity]]: activityStatistic},
+            activity,
+            id
+        }
+    }
+}
+
+

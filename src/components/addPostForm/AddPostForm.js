@@ -7,36 +7,50 @@ class AddPostForm extends Component {
     state = {
         content: '',
         image: '',
-        authorID: null
+        authorID: null,
+        formIsValid: false
     }
 
     onChange = (event) => {
         const target = event.target;
-        this.setState({[target.name]: target.value})
+        this.setState({[target.name]: target.value}, () => this.setState({formIsValid: this.checkFormIsValid()}))
     }
     onClick = () => {
-        this.props.addPost({...this.state})
+
+        this.props.addPost({
+            ...this.state,
+            date :`${new Date().toLocaleDateString()}  ${new Date().toLocaleTimeString()}`,
+            likes: 0,
+            reposts: 0,
+            comments: 0,
+            statistic: {
+                whoLiked:[],
+                whoCommented:[],
+                whoReposted:[]}})
         this.setState({
             content: '',
             image: '',
-            authorID: ''
+            authorID: null,
+            formIsValid: false
         })
     }
+    checkFormIsValid = () => this.state.content && this.state.authorID && this.state.image;
+
 
     render() {
         const {authors} = this.props;
-        const {content, image} = this.state;
+        const {content, image, formIsValid} = this.state;
         return (<form>
             <input type='text' placeholder='image URL' onChange={this.onChange} name='image' required value={image}/>
             <textarea placeholder={`post's text`} onChange={this.onChange} name='content' value={content}/>
             <select onChange={this.onChange} name='authorID'>
-
+                <option value='0'>author</option>
                 {
                     authors.length > 0 ? authors.map(author => (
-                        <option key={author.id} value={author.id}>{author.name}</option>)) : null
+                        <option key={author.id} value={+author.id}>{author.name}</option>)) : null
                 }
             </select>
-            <button type='button' onClick={this.onClick}>add post</button>
+            <button type='button' onClick={this.onClick} disabled={!formIsValid}>add post</button>
         </form>)
     }
 }

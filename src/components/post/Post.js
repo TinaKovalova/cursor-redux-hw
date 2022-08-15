@@ -1,15 +1,22 @@
 import {Component} from "react";
-import './Post.css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {connect} from "react-redux";
 import {faMessage, faHeart, faRetweet, faShare, faCheckCircle} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import './Post.css';
+import {setActivity} from "../../redux/actions";
 
+class Post extends Component {
 
-export default class Post extends Component {
+    getPostsAuthor = (authors, id) => authors.find(author => author.id == id);
+    onClick = (event) => {
+        const targetName = event.currentTarget.getAttribute('name');
+        this.props.setActivity(this.props.post, targetName)
+    }
 
     render() {
-        console.log('Post props', this.props)
+        const {content, image, date, likes, reposts, comments} = this.props.post;
+        const {name, photo, nickname} = this.props.author;
 
-        const {content, image, date, author: {name, photo, nickname}} = this.props;
         return (
             <div className='post d-flex'>
                 <img src={photo} className='photo' alt='avatar'/>
@@ -22,17 +29,17 @@ export default class Post extends Component {
                     <p>{content}</p>
                     <img src={image} className='content-image' alt='content'/>
                     <div className='d-flex post-menu'>
-                        <div>
+                        <div onClick={this.onClick} name='comments'>
                             <FontAwesomeIcon icon={faMessage}/>
-                            <label>482</label>
+                            <label>{comments}</label>
                         </div>
-                        <div>
+                        <div onClick={this.onClick} name='reposts'>
                             <FontAwesomeIcon icon={faRetweet}/>
-                            <label>146</label>
+                            <label>{reposts}</label>
                         </div>
-                        <div>
+                        <div onClick={this.onClick} name='likes'>
                             <FontAwesomeIcon icon={faHeart}/>
-                            <label>887</label>
+                            <label>{likes}</label>
                         </div>
                         <div>
                             <FontAwesomeIcon icon={faShare}/>
@@ -43,3 +50,18 @@ export default class Post extends Component {
         );
     }
 }
+
+const mapStateToProps = ({posts, authors}, {postId}) => {
+    const post = posts.find(post => post.id == postId);
+    const author = authors.find(author => author.id == post.authorID);
+    return {post, author}
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setActivity: (post, type) => dispatch(setActivity(post, type)),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);
