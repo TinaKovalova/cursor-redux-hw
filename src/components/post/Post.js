@@ -4,6 +4,7 @@ import {faMessage, faHeart, faRetweet, faShare, faCheckCircle} from '@fortawesom
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import './Post.css';
 import {setActivity} from "../../redux/actions";
+import {logDOM} from "@testing-library/react";
 
 class Post extends Component {
 
@@ -11,6 +12,7 @@ class Post extends Component {
         const targetName = event.currentTarget.getAttribute('name');
         this.props.setActivity(this.props.post, targetName)
     }
+    onError = (event) => event.currentTarget.style.display='none';
 
     render() {
         const {content, image, date, likes, reposts, comments} = this.props.post;
@@ -26,7 +28,7 @@ class Post extends Component {
                         <span>{nickname} - {date}</span>
                     </div>
                     <p>{content}</p>
-                    <img src={image} className='content-image' alt='content'/>
+                    <img src={image} onError={this.onError}  className='content-image' alt='content'/>
                     <div className='d-flex post-menu'>
                         <div onClick={this.onClick} name='comments'>
                             <FontAwesomeIcon icon={faMessage}/>
