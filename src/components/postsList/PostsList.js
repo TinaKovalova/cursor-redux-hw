@@ -10,7 +10,7 @@ class PostsList extends Component {
             <div className='posts-block'>
                 {
                     posts.length > 0 ?
-                        posts.map(post => (<Post key={post.id} post={post} postId={post.id}/>)) : null
+                        posts.reverse().map(post => (<Post key={post.id} post={post} postId={post.id}/>)) : null
                 }
             </div>
         )

@@ -14,10 +14,8 @@ export const setActivity = (post, activity) => {
         reposts: 'whoReposted',
         comments: 'whoCommented'
     }
-
     const {id, statistic} = post;
     let activityStatistic = statistic[activityTypes[activity]]
-
     if (!activityStatistic.includes(1)) {
         post[activity]++;
         activityStatistic.push(1);
@@ -25,11 +23,12 @@ export const setActivity = (post, activity) => {
         post[activity]--;
         activityStatistic = activityStatistic.filter(userId => userId != 1)
     }
+    const resStatistic = {...post.statistic, [activityTypes[activity]]: activityStatistic}
     return {
         type: SET_ACTIVITY,
         payload: {
             [activity.toString()]: post[activity],
-            statistic: {...post.statistic, [activityTypes[activity]]: activityStatistic},
+            statistic: {...resStatistic},
             activity,
             id
         }
