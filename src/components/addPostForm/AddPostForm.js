@@ -34,7 +34,7 @@ class AddPostForm extends Component {
             formIsValid: false
         })
     }
-    checkFormIsValid = () => this.state.content && this.state.authorID && this.state.image;
+    checkFormIsValid = () => this.state.content && this.state.authorID && this.state.authorID!=0 && this.state.image;
 
 
     render() {
