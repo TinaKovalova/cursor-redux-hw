@@ -7,7 +7,6 @@ import {setActivity} from "../../redux/actions";
 
 class Post extends Component {
 
-    getPostsAuthor = (authors, id) => authors.find(author => author.id == id);
     onClick = (event) => {
         const targetName = event.currentTarget.getAttribute('name');
         this.props.setActivity(this.props.post, targetName)
